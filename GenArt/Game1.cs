@@ -24,6 +24,7 @@ namespace GenArt
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _graphics.PreferHalfPixelOffset = true;
         }
 
         List<Agent> agents;
@@ -49,7 +50,7 @@ namespace GenArt
 
             _graphics.PreferredBackBufferHeight = 1080;// _texture.Height;
             _graphics.PreferredBackBufferWidth = 1920;//_texture.Width;
-            RenderTarget = new RenderTarget2D(GraphicsDevice, MapData.X, MapData.Y);
+            RenderTarget = new RenderTarget2D(GraphicsDevice, MapData.X, MapData.Y, true, SurfaceFormat.Color, DepthFormat.None);
             Color[] colorsss = new Color[MapData.X * MapData.Y];
             for (int i = 0; i < MapData.X * MapData.Y; i++)
             {
@@ -81,6 +82,7 @@ namespace GenArt
             Agent.LoadTexture(GraphicsDevice);
             AgentR.LoadTexture(GraphicsDevice);
             AgentB.LoadTexture(GraphicsDevice);
+            AgentGreen_4way.LoadTexture(GraphicsDevice);
 
             agents = new List<Agent>();
 
@@ -90,17 +92,21 @@ namespace GenArt
                 for (int j = 0; j < _graphics.PreferredBackBufferHeight; j += mount)
                 {
 
-                    Agent ag = new Agent();
-                    ag.Position = new Vector2(random.Next(1, MapData.X - 1), random.Next(1, MapData.Y - 1));
-                    agents.Add(ag);
+                    //Agent ag = new Agent();
+                    //ag.Position = new Vector2(random.Next(1, MapData.X - 1), random.Next(1, MapData.Y - 1));
+                    //agents.Add(ag);
 
-                    AgentR agr = new AgentR();
-                    agr.Position = new Vector2(random.Next(1, MapData.X - 2) + 1, random.Next(1, MapData.Y - 1));
-                    agents.Add(agr);
+                    //AgentR agr = new AgentR();
+                    //agr.Position = new Vector2(random.Next(1, MapData.X - 2) + 1, random.Next(1, MapData.Y - 1));
+                    //agents.Add(agr);
 
-                    AgentB agb = new AgentB();
-                    agb.Position = new Vector2(random.Next(1, MapData.X - 2) , random.Next(1, MapData.Y - 1) + 1);
-                    agents.Add(agb);
+                    //AgentB agb = new AgentB();
+                    //agb.Position = new Vector2(random.Next(1, MapData.X - 2), random.Next(1, MapData.Y - 1) + 1);
+                    //agents.Add(agb);
+
+                    AgentGreen_4way agc = new AgentGreen_4way();
+                    agc.Position = new Vector2(random.Next(1, MapData.X - 2), random.Next(1, MapData.Y - 1) + 1);
+                    agents.Add(agc);
                 }
             }
             //for (int i = 0; i < 300; i++)
@@ -128,14 +134,14 @@ namespace GenArt
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (del<=0)
+            if (del<=0 && !OneFrame)
             {
 
                 for (int i = 0; i < agents.Count; i++)
                 {
                     agents[i].act(heightmap, MapData.X, MapData.Y);
                 }
-                del = 0.0001;
+                del = 0.001;
                 OneFrame = true;
             }
             else
@@ -150,13 +156,13 @@ namespace GenArt
         RenderTarget2D RenderTarget;
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(new Color(0.8f, 0.8f, 0.8f, 1f));
+            GraphicsDevice.Clear(new Color(1f, 0.8f, 0.8f, 1f));
             if (OneFrame)
             {
                 GraphicsDevice.SetRenderTarget(RenderTarget);
                 _spriteBatch.Begin();
                 //RenderTarget.SetData(colors);
-                //_spriteBatch.Draw(OnePixeltexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), new Color(.4f, 0.4f, 0.4f, 0.1f));
+                _spriteBatch.Draw(OnePixeltexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), new Color(.0f, 0.0f, 0.0f, 0.1f));
                 //_spriteBatch.Draw(_texture, new Rectangle(0, 0, RenderTarget.Width, RenderTarget.Height), new Color(.4f, 0.4f, 0.4f, 0.2f*(float)Math.Sin(gameTime.ElapsedGameTime.TotalSeconds)));
                 //_spriteBatch.Draw(_texture2, new Rectangle(0, 0, RenderTarget.Width, RenderTarget.Height), new Color(.4f, 0.4f, 0.4f, 0.2f* (float)Math.Sin(gameTime.ElapsedGameTime.TotalSeconds)));
 
@@ -166,7 +172,7 @@ namespace GenArt
                     agents[i].Draw(_spriteBatch, coef);
                 }
                 _spriteBatch.End(); 
-                OneFrame = false;
+                OneFrame = false; 
                 GraphicsDevice.SetRenderTarget(null);
             }
             _spriteBatch.Begin();
@@ -251,7 +257,7 @@ namespace GenArt
                 }
             }
             Texture2D.SetData(colors);
-            drawColorR = new Color(0.2f, 0.2f, 0.6f, 0.0005f);
+            drawColorR = new Color(0.2f, 0.2f, 0.6f, 0.00005f);
         }
         public override void act(double[,] heightmap, int mapWidth, int mapHeight)
         {
@@ -268,20 +274,32 @@ namespace GenArt
         }
     }
     public class AgentB : Agent
-    { 
+    {
         static Color drawColorB;
         static int size = 2;
         public Vector2 accel = new Vector2();
         public static new void LoadTexture(GraphicsDevice graphicsDevice)
         {
             Texture2D = Agent.Texture2D;
-            drawColorB = new Color(0.5f, 0.3f, 0.9f, 0.1f);
+            drawColorB = new Color(0.5f, 0.3f, 0.9f, 0.001f);
         }
+        double av = 0;
         public override void act(double[,] heightmap, int mapWidth, int mapHeight)
         {
             if (CheckAndSetPos(mapWidth, mapHeight))
                 return;
             double val = heightmap[(int)Position.X, (int)Position.Y] - 0.5;
+            av += val / 200;
+            if (av >= 0.15)
+            {
+                av = 0;
+                accel = new Vector2(
+                    (float)(Math.Round(Math.Cos(val * 1)) * 4) / 4
+                    ,
+                    (float)(Math.Round(Math.Sin(val * 1)) * 4) / 4
+                    ) * size / 4f;
+                accel.Normalize();
+            }
             double mlt = 16f * (float)Math.PI;
             accel *= 0.95f;
             accel += new Vector2((float)Math.Cos(val * mlt), (float)Math.Sin(val * mlt)) * size / 4f;
@@ -291,10 +309,98 @@ namespace GenArt
         public override void Draw(SpriteBatch spriteBatch, float coefPos)
         {
             Color color = new Color(
-                (float)Math.Sin(10f/accel.LengthSquared()),
-                (float)Math.Cos(2* 10f / accel.LengthSquared()), 
-                accel.LengthSquared() / 5f, 
+                (float)Math.Sin(10f / accel.LengthSquared()),
+                (float)Math.Cos(2 * 10f / accel.LengthSquared()),
+                accel.LengthSquared() / 5f,
                 drawColorB.A);
+            spriteBatch.Draw(Texture2D, (Position - new Vector2(Texture2D.Width / 2f, Texture2D.Height / 2f)) * coefPos, color);
+        }
+    }
+    public class AgentGreen_4wayold : Agent
+    {
+        static Color drawColorC;
+        static int size = 1;
+        public Vector2 accel = new Vector2();
+        public static new void LoadTexture(GraphicsDevice graphicsDevice)
+        {
+            Texture2D = Agent.Texture2D;
+            drawColorC = new Color(0.06f, 0.5f, 0.06f, 0.0001f);
+        }
+        double av = 0;
+        public override void act(double[,] heightmap, int mapWidth, int mapHeight)
+        {
+            if (CheckAndSetPos(mapWidth, mapHeight))
+                return;
+            double val = heightmap[(int)Position.X, (int)Position.Y] - 0.5;
+            av += val;
+            if (Math.Abs(av) >= 1)
+            {
+                accel = new Vector2(
+                    (float)(Math.Round(Math.Sin(val * 2 * Math.PI) * 2) / 2)
+                    ,
+                    (float)(Math.Round(Math.Cos(val * 2 * Math.PI) * 2) / 2)
+                    ) * Math.Sign(av) * 3;
+                //accel.Normalize();
+                av = 0;
+            }
+            double mlt = 16f * (float)Math.PI;
+            //accel *= 0.95f;
+            //accel += new Vector2((float)Math.Cos(val * mlt), (float)Math.Sin(val * mlt)) * size / 4f;
+            Position += accel;
+            //Position += new Vector2((float)val, (float)val) * size;
+        }
+        public override void Draw(SpriteBatch spriteBatch, float coefPos)
+        {
+            Color color = drawColorC;
+            //new Color(
+            //    (float)drawColorC.R,
+            //    (float)drawColorC.G,
+            //    accel.LengthSquared() / 5f,
+            //    drawColorC.A);
+            spriteBatch.Draw(Texture2D, (Position - new Vector2(Texture2D.Width / 2f, Texture2D.Height / 2f)) * coefPos, color);
+        }
+    }
+    public class AgentGreen_4way : Agent
+    {
+        static Color drawColorC;
+        static int size = 1;
+        public Vector2 accel = new Vector2();
+        public static new void LoadTexture(GraphicsDevice graphicsDevice)
+        {
+            Texture2D = Agent.Texture2D;
+            drawColorC = new Color(0.02f, 0.4f, 0.02f, 0.0001f);
+        }
+        double av = 0;
+        public override void act(double[,] heightmap, int mapWidth, int mapHeight)
+        {
+            if (CheckAndSetPos(mapWidth, mapHeight))
+                return;
+            double val = heightmap[(int)Position.X, (int)Position.Y] - 0.5;
+            av += val;
+            if (Math.Abs(av) >= 2)
+            {
+                accel = accel /2 + new Vector2(
+                    (float)(Math.Cos(Math.PI*Math.Round(Math.Sin(val * 2 * Math.PI ) * 2) / 2))
+                    ,
+                    (float)(Math.Sin(Math.PI * Math.Round(Math.Cos(val * 2 * Math.PI) * 2) / 2))
+                    ) * Math.Sign(av) * 3;
+                //accel.Normalize();
+                Position += 5 * accel;
+                av = 0;
+            } 
+            //accel *= 0.95f;
+            //accel += new Vector2((float)Math.Cos(val * mlt), (float)Math.Sin(val * mlt)) * size / 4f;
+            Position += accel;
+            //Position += new Vector2((float)val, (float)val) * size;
+        }
+        public override void Draw(SpriteBatch spriteBatch, float coefPos)
+        {
+            Color color = drawColorC;
+            //new Color(
+            //    (float)drawColorC.R,
+            //    (float)drawColorC.G,
+            //    accel.LengthSquared() / 5f,
+            //    drawColorC.A);
             spriteBatch.Draw(Texture2D, (Position - new Vector2(Texture2D.Width / 2f, Texture2D.Height / 2f)) * coefPos, color);
         }
     }
