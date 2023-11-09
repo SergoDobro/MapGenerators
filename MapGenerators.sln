@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapGenerators", "MapGenerators\MapGenerators.csproj", "{95848FF0-6ECB-4C16-8BEF-3838C0DB670F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerlinNoise", "PerlinNoise\PerlinNoise.csproj", "{9D0B34BB-D3BC-46D1-8A73-D9CEEFFB6999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenArt", "GenArt\GenArt.csproj", "{09649CBF-831D-4EAD-95CE-0089F4D90987}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95848FF0-6ECB-4C16-8BEF-3838C0DB670F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95848FF0-6ECB-4C16-8BEF-3838C0DB670F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95848FF0-6ECB-4C16-8BEF-3838C0DB670F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95848FF0-6ECB-4C16-8BEF-3838C0DB670F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D0B34BB-D3BC-46D1-8A73-D9CEEFFB6999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D0B34BB-D3BC-46D1-8A73-D9CEEFFB6999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D0B34BB-D3BC-46D1-8A73-D9CEEFFB6999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D0B34BB-D3BC-46D1-8A73-D9CEEFFB6999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09649CBF-831D-4EAD-95CE-0089F4D90987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09649CBF-831D-4EAD-95CE-0089F4D90987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09649CBF-831D-4EAD-95CE-0089F4D90987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09649CBF-831D-4EAD-95CE-0089F4D90987}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BD4464C7-684C-457C-865F-CF2226ECEFBB}
+	EndGlobalSection
+EndGlobal
